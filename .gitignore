@@ -1,0 +1,10 @@
+*.pyc
+build
+dist
+*.spec
+rc.py
+debug*
+test*
+*.qrc
+*.exe
+*.db
