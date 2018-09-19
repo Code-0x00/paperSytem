@@ -8,3 +8,6 @@ test*
 *.qrc
 *.exe
 *.db
+
+# PyCharm
+.idea/
