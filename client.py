@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -64,7 +63,7 @@ class PaperDB(QWidget):
         r"""
         目录设置start
         """
-        current_config=config.config_get()
+        current_config = config.config_get()
         self.pathLine = QLineEdit()
         self.pathLine.setText(parameters.client.path)
         self.pathLine.setReadOnly(True)
@@ -82,8 +81,18 @@ class PaperDB(QWidget):
         self.chapterListView.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.chapterListView.setEnabled(False)
 
+        self.table_test = QTableWidget(self.chapterGroupBox)
+        self.table_test.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.table_test.setEnabled(True)
+
         groupBoxLayout = QHBoxLayout(self.chapterGroupBox)
         groupBoxLayout.addWidget(self.chapterListView)
+        groupBoxLayout.addWidget(self.table_test)
+
+        self.table_test.setColumnCount(4)
+        self.table_test.setRowCount(3)
+        self.table_test.setHorizontalHeaderLabels(["标题", '作者', 'c', 'd'])
+        self.table_test.setSelectionBehavior(1)
         r"""
         列表end
         """
@@ -234,6 +243,10 @@ class PaperDB(QWidget):
         self.contentNameList = self.db.select()
         for i in range(len(self.contentNameList)):
             self.chapterListView.addItem('№{0:0>3} | {1}'.format(i + 1, self.contentNameList[i]['ID']))
+            self.table_test.insertRow(self.table_test.rowCount())
+            newItem = QTableWidgetItem(self.contentNameList[i]['ID'])
+            self.table_test.setItem(i,0,newItem)
+
             if os.path.exists(parameters.client.path + "/" + self.contentNameList[i]['ID'] + ".pdf"):
                 self.chapterListView.item(i).setSelected(True)
             else:
@@ -278,50 +291,8 @@ class PaperDB(QWidget):
         self.InfoEdit.setPlainText(ret)
 
 
-class Downloader(QThread):
-    output = pyqtSignal(['QString'])
-    finished = pyqtSignal()
-
-    def __init__(self, selectedChapterList, comicPath, contentList, contentNameList, id, one_folder=False, parent=None):
-        super(Downloader, self).__init__(parent)
-
-        self.selectedChapterList = selectedChapterList
-        self.comicPath = comicPath
-        self.contentList = contentList
-        self.contentNameList = contentNameList
-        self.id = id
-        self.one_folder = one_folder
-
-    def run(self):
-        try:
-            for i in self.selectedChapterList:
-                outputString = '正在下载第{0:0>4}话: {1}...'.format(i + 1, self.contentNameList[i])
-                print(outputString)
-                self.output.emit(outputString)
-                forbiddenRE = re.compile(r'[\\/":*?<>|]')  # windows下文件名非法字符\ / : * ? " < > |
-                self.contentNameList[i] = re.sub(forbiddenRE, '_', self.contentNameList[i])
-                contentPath = os.path.join(self.comicPath, '第{0:0>4}话-{1}'.format(i + 1, self.contentNameList[i]))
-                if not self.one_folder:
-                    if not os.path.isdir(contentPath):
-                        os.mkdir(contentPath)
-                imgList = getComic.getImgList(self.contentList[i], self.id)
-                getComic.downloadImg(imgList, contentPath, self.one_folder)
-
-                self.output.emit('完毕!')
-
-        except Exception as e:
-            self.output.emit('<font color="red">{}</font>\n'
-                             '遇到异常!请尝试重新点击下载按钮重试'.format(e))
-            raise
-
-        finally:
-            self.finished.emit()
-
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-
     main = PaperDB()
     main.show()
-
     app.exec_()
