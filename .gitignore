@@ -11,3 +11,6 @@ test*
 
 # PyCharm
 .idea/
+
+# tmp files
+.config

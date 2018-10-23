@@ -1,8 +1,5 @@
 import re
-
-
-def saveJsonAsBibtex():
-    pass
+import json
 
 
 def bibtex2json(bibtex):
@@ -14,7 +11,7 @@ def bibtex2json(bibtex):
         return ''
 
     keywords = ['title', 'author', 'booktitle', 'volume', 'pages', 'year']
-    bibTypes = ['inproceedings', 'article', 'book']
+    bibTypes = ['inproceedings', 'article', 'incollection', 'book']
 
     result_list = []
 
@@ -35,6 +32,35 @@ def bibtex2json(bibtex):
 
 
 def json2bibtex():
+    pass
+
+
+def saveJsonAsBibtex():
+    pass
+
+
+def saveBibtexAsJson(bibtex, json_filename):
+    json_bib = bibtex2json(bibtex)
+    with open(json_filename, 'w', encoding='utf-8') as f:
+        json.dump(json_bib, f, ensure_ascii=False)
+
+
+def loadBibtexAsJson():
+    pass
+
+
+def loadJsonAsBibtex():
+    pass
+
+
+def transFileBibtex2json(bibtex_filename, json_filename):
+    f = open(bibtex_filename, 'r', encoding='UTF-8')
+    all_bib = f.read()
+    f.close()
+    saveBibtexAsJson(all_bib, json_filename)
+
+
+def transFileJson2Bibtex(json_filename, bibtex_filename):
     pass
 
 
