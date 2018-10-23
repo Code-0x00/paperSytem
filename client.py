@@ -10,6 +10,8 @@ import os
 import re
 import sys
 
+import json
+
 import rc
 
 
@@ -21,7 +23,6 @@ def id_info_get(text):
         else:
             ret_text += i + '\n'
     ret = []
-    print(ret_text)
     for item in ret_text.split('@'):
         try:
             tmp = {}
@@ -36,7 +37,6 @@ def id_info_get(text):
             tmp['title'] = "404"
             tmp['info'] = '404'
         ret.append(tmp)
-    print(ret)
     return ret
 
 
@@ -44,7 +44,9 @@ class PaperDB(QWidget):
     def __init__(self, parent=None):
         super(PaperDB, self).__init__(parent)
 
-        self.db = server.PAPERDB()
+        ft = open('xhq.json', 'r', encoding='utf-8')
+        self.bib_db = json.load(ft)
+        ft.close()
 
         self.setWindowIcon(QIcon(':/icons/_128.ico'))
         r"""
@@ -77,22 +79,23 @@ class PaperDB(QWidget):
         列表start
         """
         self.chapterGroupBox = QGroupBox("论文列表")
-        self.chapterListView = QListWidget(self.chapterGroupBox)
-        self.chapterListView.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.chapterListView.setEnabled(False)
+        # self.chapterListView = QListWidget(self.chapterGroupBox)
+        # self.chapterListView.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        # self.chapterListView.setEnabled(False)
 
-        self.table_test = QTableWidget(self.chapterGroupBox)
-        self.table_test.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.table_test.setEnabled(True)
+        self.bib_table = QTableWidget(self.chapterGroupBox)
+        self.bib_table.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.bib_table.setEnabled(True)
 
         groupBoxLayout = QHBoxLayout(self.chapterGroupBox)
-        groupBoxLayout.addWidget(self.chapterListView)
-        groupBoxLayout.addWidget(self.table_test)
+        # groupBoxLayout.addWidget(self.chapterListView)
+        groupBoxLayout.addWidget(self.bib_table)
 
-        self.table_test.setColumnCount(4)
-        self.table_test.setRowCount(3)
-        self.table_test.setHorizontalHeaderLabels(["标题", '作者', 'c', 'd'])
-        self.table_test.setSelectionBehavior(1)
+        self.bib_table.setColumnCount(4)
+        self.bib_table.setRowCount(3)
+        self.bib_table.setHorizontalHeaderLabels(["标题", '作者', 'c', 'd'])
+        self.bib_table.setSelectionBehavior(1)
+
         r"""
         列表end
         """
@@ -124,6 +127,10 @@ class PaperDB(QWidget):
         self.GridInit()
 
         self.IdList()
+        r"""
+        监听
+        """
+        # sclicked()elf.bib_table.
 
     def openpdf(self):
         selectedChapterList = self.chapterListView.selectedIndexes()
@@ -156,6 +163,8 @@ class PaperDB(QWidget):
         Grid start
         """
         self.mainLayout = QGridLayout()
+        # 没弄明白参数的意思
+        self.mainLayout.setColumnStretch(0, 1);
         self.mainLayout.addWidget(QLabel("分类"), 0, 0)
         self.mainLayout.addWidget(self.ComboBoxClass0, 0, 1)
         self.mainLayout.addWidget(self.analysisButton, 0, 2)
@@ -197,14 +206,13 @@ class PaperDB(QWidget):
         self.downloadButton.setEnabled(True)
 
     def IdList(self):
-        self.chapterListView.clear()
-        # print(self.ComboBoxClass0.currentIndex())
-        # print(self.ComboBoxClass0.currentText())
+        # self.chapterListView.clear()
+
         self.anaysisKeywords()
 
-        self.chapterListView.setEnabled(True)
+        # self.chapterListView.setEnabled(True)
         self.downloadButton.setEnabled(True)
-        self.chapterListView.setFocus()
+        # self.chapterListView.setFocus()
         self.statusLabel.setText('选择后描述')
         self.downloadButton.setEnabled(True)
 
@@ -240,24 +248,32 @@ class PaperDB(QWidget):
 
     def anaysisKeywords(self):
 
-        self.contentNameList = self.db.select()
+        # self.contentNameList = self.db.select()
+        self.contentNameList = self.bib_db
         for i in range(len(self.contentNameList)):
-            self.chapterListView.addItem('№{0:0>3} | {1}'.format(i + 1, self.contentNameList[i]['ID']))
-            self.table_test.insertRow(self.table_test.rowCount())
-            newItem = QTableWidgetItem(self.contentNameList[i]['ID'])
-            self.table_test.setItem(i,0,newItem)
+            # self.chapterListView.addItem('№{0:0>3} | {1}'.format(i + 1, self.contentNameList[i]['title']))
+            self.bib_table.insertRow(self.bib_table.rowCount())
+            newItem = QTableWidgetItem(self.contentNameList[i]['title'])
+            self.bib_table.setItem(i, 0, newItem)
 
-            if os.path.exists(parameters.client.path + "/" + self.contentNameList[i]['ID'] + ".pdf"):
+            newItem = QTableWidgetItem(self.contentNameList[i]['author'])
+            self.bib_table.setItem(i, 1, newItem)
+
+            if os.path.exists(parameters.client.path + "/" + self.contentNameList[i]['title'] + ".pdf"):
+                continue
                 self.chapterListView.item(i).setSelected(True)
             else:
+                continue
                 self.chapterListView.item(i).setSelected(False)
                 self.chapterListView.item(i).setForeground(QColor(248, 168, 0))
 
     def download(self):
-        selectedChapterList = [item.row() for item in self.chapterListView.selectedIndexes()]
+        selectedChapterList = [item.row() for item in self.bib_table.selectedIndexes()]
+        tmp_index = list(set(selectedChapterList))
+
         ret = ''
-        for i in selectedChapterList:
-            ret += self.contentNameList[i]['INFO']
+        for i in tmp_index:
+            ret += self.bib_db[i]['title'] + '\n'
         self.InfoEdit.setPlainText(ret)
         return 0
 
@@ -284,11 +300,14 @@ class PaperDB(QWidget):
         self.downloadThread.start()
 
     def InformationGet(self):
-        selectedChapterList = [item.row() for item in self.chapterListView.selectedIndexes()]
+        selectedChapterList = [item.row() for item in self.table_test.selectedIndexes()]
         ret = ''
-        for i in selectedChapterList:
-            ret += self.contentNameList[i]['INFO']
-        self.InfoEdit.setPlainText(ret)
+        # for i in selectedChapterList:
+        #    ret += self.contentNameList[i]['title']
+        # self.InfoEdit.setPlainText(ret)
+
+    def testt(self):
+        print('ssssss')
 
 
 if __name__ == '__main__':
