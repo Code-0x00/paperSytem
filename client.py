@@ -117,7 +117,8 @@ class PaperDB(QWidget):
         self.Button5 = QPushButton("保存并插入")
         self.Button5.clicked.connect(self.insert1)
 
-        self.InfoEdit = QTextEdit()
+        self.editGroupBox = QGroupBox("备注")
+        self.InfoEdit = QTextEdit(self.editGroupBox)
         self.InfoEdit.setPlainText("Null")
         self.InfoEdit.setReadOnly(True)
 
@@ -182,7 +183,8 @@ class PaperDB(QWidget):
         self.mainLayout.addWidget(self.Button3, 6, 2)
         self.mainLayout.addWidget(self.Button4, 7, 2)
 
-        self.mainLayout.addWidget(self.InfoEdit, 8, 2)
+        self.mainLayout.addWidget(self.editGroupBox,8,2)
+        #self.mainLayout.addWidget(self.InfoEdit, 8, 2)
 
         self.mainLayout.addWidget(self.Button5, 9, 2)
 
