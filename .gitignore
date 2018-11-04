@@ -14,3 +14,7 @@ test*
 
 # tmp files
 .config
+
+# VS
+Release/
+.vs/

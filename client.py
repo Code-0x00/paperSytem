@@ -132,6 +132,26 @@ class PaperDB(QWidget):
         监听
         """
         # sclicked()elf.bib_table.
+        self.uiInit()
+
+    def uiInit(self):
+        self.listGroupBoxInit()
+        self.buttonGroupBoxInit()
+        self.editGroupBoxInit()
+
+        mainLayout=QHBoxLayout()
+        mainLayout.addLayout()
+
+        self.setLayout()
+
+    def listGroupBoxInit(self):
+        self.listGroupBox=QGroupBox("paper list")
+
+    def buttonGroupBoxInit(self):
+        pass
+
+    def editGroupBoxInit(self):
+        pass
 
     def openpdf(self):
         selectedChapterList = self.chapterListView.selectedIndexes()
@@ -183,8 +203,8 @@ class PaperDB(QWidget):
         self.mainLayout.addWidget(self.Button3, 6, 2)
         self.mainLayout.addWidget(self.Button4, 7, 2)
 
-        self.mainLayout.addWidget(self.editGroupBox,8,2)
-        #self.mainLayout.addWidget(self.InfoEdit, 8, 2)
+        self.mainLayout.addWidget(self.editGroupBox, 8, 2)
+        # self.mainLayout.addWidget(self.InfoEdit, 8, 2)
 
         self.mainLayout.addWidget(self.Button5, 9, 2)
 
