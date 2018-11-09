@@ -1,46 +1,54 @@
 import sys
-from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-import PyQt5
 
 
 class UIBase(QWidget):
-    def __init__(self):
-        super(UIBase, self).__init__()
+    def __init__(self, parent=None):
+        super(UIBase, self).__init__(parent)
         self.ui_init()
+        self.info_init()
+        self.buttons_init()
 
     def ui_init(self):
-        self.mainLayout = QHBoxLayout()
-        self.paperTable = QTableView()
-        self.controlLayout = QVBoxLayout()
+        self.main_layout = QHBoxLayout()
+        self.paperTable = QTableWidget()
+        self.control_widget = QWidget()
 
-        self.InitPaperTable()
-        self.InitControlLayout()
+        self.paper_table_init()
+        self.control_widget_init()
 
-        self.mainLayout.addWidget(self.paperTable)
-        self.mainLayout.addLayout(self.controlLayout)
+        self.main_layout.addWidget(self.paperTable)
+        self.main_layout.addWidget(self.control_widget)
         self.setWindowTitle("Input Dialog")
 
-        self.setLayout(self.mainLayout)
+        self.setLayout(self.main_layout)
 
-    def InitPaperTable(self):
+    def paper_table_init(self):
         pass
 
-    def InitControlLayout(self):
+    def control_widget_init(self):
+        self.control_widget.setMaximumWidth(300)
+        self.controlLayout = QVBoxLayout()
+        self.control_widget.setLayout(self.controlLayout)
+
         self.buttonLayout = QGridLayout()
-        self.InitButtonLayout()
+        self.button_layout_init()
 
         self.editbox = QTextEdit()
 
         self.controlLayout.addLayout(self.buttonLayout)
         self.controlLayout.addWidget(self.editbox)
 
-    def InitButtonLayout(self):
+    def button_layout_init(self):
         buttons_namelist = ['ok'] + ['x' for i in range(9)]
         self.btns = [QPushButton(buttons_namelist[i], self) for i in range(9)]
         for i in range(9):
             self.buttonLayout.addWidget(self.btns[i], i // 3, i % 3, 1, 1)
+
+    def info_init(self):
+        pass
+    def buttons_init(self):
+        pass
 
 
 if __name__ == "__main__":
