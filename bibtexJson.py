@@ -45,8 +45,11 @@ def saveBibtexAsJson(bibtex, json_filename):
         json.dump(json_bib, f, ensure_ascii=False)
 
 
-def loadBibtexAsJson():
-    pass
+def loadBibtexAsJson(bibtex_filename):
+    f = open(bibtex_filename, 'r', encoding='UTF-8')
+    all_bib = f.read()
+    f.close()
+    return bibtex2json(all_bib)
 
 
 def loadJsonAsBibtex():
@@ -65,4 +68,5 @@ def transFileJson2Bibtex(json_filename, bibtex_filename):
 
 
 if __name__ == '__main__':
-    print(bibtex2json(''))
+    #print(bibtex2json(''))
+    print(loadBibtexAsJson('xhq.bib'))
