@@ -44,10 +44,15 @@ class UIBase(QWidget):
         self.btns = [QPushButton(buttons_namelist[i], self) for i in range(9)]
         for i in range(9):
             self.buttonLayout.addWidget(self.btns[i], i // 3, i % 3, 1, 1)
+            self.btns[i].clicked.connect(self.button_clicked)
 
     def info_init(self):
         pass
+
     def buttons_init(self):
+        pass
+
+    def button_clicked(self):
         pass
 
 
