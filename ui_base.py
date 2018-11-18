@@ -19,7 +19,7 @@ class UIBase(QWidget):
 
         self.main_layout.addWidget(self.paperTable)
         self.main_layout.addWidget(self.control_widget)
-        self.setWindowTitle("Input Dialog")
+        self.setWindowTitle("References")
 
         self.setLayout(self.main_layout)
 
