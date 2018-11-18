@@ -36,7 +36,6 @@ class UIAdd(ui_base.UIBase):
 
         keys_show = ['title', 'author', 'year', 'type']
         if os.path.exists('xhq.json'):
-            print('load json')
             with open('xhq.json', 'r', encoding='UTF-8') as f:
                 bib = json.load(f)
         else:

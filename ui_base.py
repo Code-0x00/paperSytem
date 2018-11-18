@@ -1,13 +1,19 @@
 import sys
+import math
 from PyQt5.QtWidgets import *
 
 
 class UIBase(QWidget):
     def __init__(self, parent=None):
         super(UIBase, self).__init__(parent)
+        self.self_parms_init()
         self.ui_init()
         self.info_init()
         self.buttons_init()
+
+    def self_parms_init(self):
+        self.btns = list()
+        self.button_num = 9
 
     def ui_init(self):
         self.main_layout = QHBoxLayout()
@@ -40,10 +46,10 @@ class UIBase(QWidget):
         self.controlLayout.addWidget(self.editbox)
 
     def button_layout_init(self):
-        buttons_namelist = ['ok'] + ['x' for i in range(9)]
-        self.btns = [QPushButton(buttons_namelist[i], self) for i in range(9)]
-        for i in range(9):
-            self.buttonLayout.addWidget(self.btns[i], i // 3, i % 3, 1, 1)
+        r_n = int(math.sqrt(self.button_num))
+        for i in range(self.button_num):
+            self.btns.append(QPushButton('', self))
+            self.buttonLayout.addWidget(self.btns[i], i // r_n, i % r_n, 1, 1)
             self.btns[i].clicked.connect(self.button_clicked)
 
     def info_init(self):
