@@ -21,3 +21,6 @@ Release/
 
 # Tmp
 paperSytem/
+*.bib
+*.json
+
