@@ -11,12 +11,13 @@ def bibtex2json(bibtex):
         return ''
 
     keywords = ['title', 'author', 'booktitle', 'volume', 'pages', 'year']
-    bibTypes = ['inproceedings', 'article', 'incollection', 'book']
+    bibTypes = ['inproceedings', 'article', 'incollection', 'book', 'techreport', 'mastersthesis']
 
     result_list = []
 
     items = bibtex.strip().lower()
     for item in items.split('@'):
+        item = item.replace(' =', '=').replace('= ', '=')
         tmp = {'type': ''}
         for t in bibTypes:
             if t in item:
